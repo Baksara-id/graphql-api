@@ -79,6 +79,10 @@ const resolvers = {
     async createLevel(_, { nama }, { Level }) {
       return await Level.create({ nama });
     },
+    async logoutUser(_, { id }, { User }) {
+      await User.update({ token: null }, { where: { id } });
+      return true;
+    },
     async updateLevel(_, { id, nama }, { Level }) {
       await Level.update({ nama }, { where: { id } });
       return await Level.findByPk(id);

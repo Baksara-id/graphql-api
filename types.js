@@ -38,6 +38,7 @@ const types = gql`
       email: String!
       password: String!
     ): User!
+    logoutUser(id: Int!): Boolean!
     deleteUser(id: Int!): Boolean!
     createLevel(nama: String!): Level!
     updateLevel(id: Int!, nama: String!): Level!
