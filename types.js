@@ -6,15 +6,13 @@ const types = gql`
     langganan_id: Int
     name: String!
     email: String!
-    password: String!
-
-    # sek yo, iki sg bawah2 mari tak edit disek
+    password: String
     avatar: String
     exp: Float
     level: Int
     jumlah_scan: Int
     kadaluwarsa: String
-    
+    token: String
     levels: [Level]
   }
   type Level {
@@ -33,6 +31,7 @@ const types = gql`
   }
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
+    loginUser(email: String!, password: String!): User!
     updateUser(
       id: Int!
       name: String!

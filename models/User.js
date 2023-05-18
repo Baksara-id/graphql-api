@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       level: DataTypes.INTEGER,
       jumlah_scan: DataTypes.INTEGER,
       kadaluwarsa: DataTypes.DATE,
+      token: DataTypes.STRING,
     },
     {
       sequelize,

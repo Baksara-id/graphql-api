@@ -1,22 +1,23 @@
-const { Level } = require("./models");
+const { Level } = require('./models');
+const { ApolloError } = require('apollo-server-errors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const resolvers = {
   Query: {
     users(_, __, { User }) {
       console.log(_);
-      const s = User.findAll(
-        {
-          // terus tak tambahi include iki pas query
-          include: [
-            {
-              model: Level,
-              as: "levels",
-            }
-          ],
-        }
-      );
+      const s = User.findAll({
+        // terus tak tambahi include iki pas query
+        include: [
+          {
+            model: Level,
+            as: 'levels',
+          },
+        ],
+      });
       // console.log(s);
-      return s
+      return s;
     },
     levels(_, __, { Level }) {
       return Level.findAll();
@@ -27,7 +28,32 @@ const resolvers = {
   },
   Mutation: {
     async createUser(_, { name, email, password }, { User }) {
-      return await User.create({ name, email, password });
+      const oldUser = await User.findOne({ where: { email } });
+      if (oldUser) {
+        throw new ApolloError(
+          'Email sudah terdaftar with the email' + email,
+          'USER_ALREADY_EXISTS'
+        );
+      }
+      // console.log(name, email, password);
+      var encryptedPassword = await bcrypt.hash(password, 12);
+      const newUser = new User({
+        name: name,
+        email: email.toLowerCase(),
+        password: encryptedPassword,
+      });
+      const token = jwt.sign({ user_id: newUser.id, email }, 'baksaratampan', {
+        expiresIn: '2h',
+      });
+      newUser.token = token;
+      const res = await newUser.save();
+      return {
+        id: res.id,
+        name: res.name, // Add the name field
+        email: res.email, // Add the email field
+        token: res.token, // Add the token field
+      };
+      // return await User.create({ name, email, password });
     },
     async updateUser(_, { id, name, email, password }, { User }) {
       await User.update({ name, email, password }, { where: { id } });
