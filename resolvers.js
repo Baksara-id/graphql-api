@@ -55,6 +55,19 @@ const resolvers = {
       };
       // return await User.create({ name, email, password });
     },
+    async loginUser(_, { email, password }, { User }) {
+      const user = await User.findOne({ where: { email } });
+      if (user && (await bcrypt.compare(password, user.password))) {
+        const token = jwt.sign({ user_id: user.id, email }, 'baksaratampan', {
+          expiresIn: '2h',
+        });
+        user.token = token;
+        return {
+          token: user.token,
+        };
+      }
+      throw new ApolloError('Invalid credentials', 'INVALID_CREDENTIALS');
+    },
     async updateUser(_, { id, name, email, password }, { User }) {
       await User.update({ name, email, password }, { where: { id } });
       return await User.findByPk(id);
