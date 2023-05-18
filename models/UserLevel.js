@@ -15,17 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     {
       user_id: {
         type: DataTypes.INTEGER,
-        references: {
+        /* references: {
           model: 'User',
           key: 'id',
-        },
+        }, */
       },
       level_id: {
         type: DataTypes.INTEGER,
-        references: {
+        /* references: {
           model: 'Level',
           key: 'id',
-        },
+        }, */
       },
     },
     {
