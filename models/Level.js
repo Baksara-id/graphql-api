@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { UserLevel } = require('./UserLevel');
 module.exports = (sequelize, DataTypes) => {
   class Level extends Model {
     /**
@@ -32,8 +33,10 @@ module.exports = (sequelize, DataTypes) => {
   Level.associate = (models) => {
     Level.belongsToMany(models.User, {
       through: models.UserLevel,
+      // through: 'user_level',
+      // through: UserLevel,
       foreignKey: 'level_id',
-      otherKey: 'user_id',
+      // otherKey: 'user_id',
       as: 'users',
     });
   };

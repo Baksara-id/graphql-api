@@ -1,7 +1,22 @@
+const { Level } = require("./models");
+
 const resolvers = {
   Query: {
     users(_, __, { User }) {
-      return User.findAll();
+      console.log(_);
+      const s = User.findAll(
+        {
+          // terus tak tambahi include iki pas query
+          include: [
+            {
+              model: Level,
+              as: "levels",
+            }
+          ],
+        }
+      );
+      // console.log(s);
+      return s
     },
     levels(_, __, { Level }) {
       return Level.findAll();

@@ -36,7 +36,9 @@ module.exports = (sequelize, DataTypes) => {
   );
   UserLevel.removeAttribute('id');
 
-  UserLevel.associate = (models) => {
+  // iki bang okyan tadi nek tak liak penyebab e, soal e tabel e iki mek gae lewat
+
+  /* UserLevel.associate = (models) => {
     UserLevel.belongsTo(models.User, {
       as: 'User',
       foreignKey: {
@@ -49,6 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         name: 'level_id',
       },
     });
-  };
+  }; */
   return UserLevel;
 };

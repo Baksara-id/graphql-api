@@ -3,11 +3,19 @@ const { ApolloServer, gql } = require('apollo-server');
 const types = gql`
   type User {
     id: Int!
+    langganan_id: Int
     name: String!
     email: String!
     password: String!
-    avatar: String!
-    exp: Float!
+
+    # sek yo, iki sg bawah2 mari tak edit disek
+    avatar: String
+    exp: Float
+    level: Int
+    jumlah_scan: Int
+    kadaluwarsa: String
+    
+    levels: [Level]
   }
   type Level {
     id: Int!

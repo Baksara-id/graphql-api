@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { UserLevel } = require('./UserLevel');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -18,11 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true, // Mark 'id' as the primary key
         autoIncrement: true,
       },
+      // langganan_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       avatar: DataTypes.STRING,
       exp: DataTypes.DOUBLE,
+      level: DataTypes.INTEGER,
+      jumlah_scan: DataTypes.INTEGER,
+      kadaluwarsa: DataTypes.DATE,
     },
     {
       sequelize,
@@ -32,8 +37,9 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (models) => {
     User.belongsToMany(models.Level, {
       through: models.UserLevel,
+      // through: models.UserLevel,
       foreignKey: 'user_id',
-      otherKey: 'level_id',
+      // otherKey: 'level_id',
       as: 'levels',
     });
   };
