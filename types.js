@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, gql } = require("apollo-server");
 
 const types = gql`
   type User {
@@ -7,15 +7,17 @@ const types = gql`
     name: String!
     email: String!
     password: String!
-
     # sek yo, iki sg bawah2 mari tak edit disek
     avatar: String
-    exp: Float
-    level: Int
-    jumlah_scan: Int
+    exp: Int!
+    level: Int!
+    jumlah_scan: Int!
     kadaluwarsa: String
-    
     levels: [Level]
+    riwayat_belajar: [RiwayatBelajar]
+    lencanas: [Lencana]
+    laporans: [Laporan]
+    langganan: Langganan
   }
   type Level {
     id: Int!
@@ -26,10 +28,110 @@ const types = gql`
     user_id: Int!
     level_id: Int!
   }
+
+  type RiwayatBelajar {
+    id: Int!
+    user: User
+    nomor_modul: Int!
+    nomor_pelajaran: Int!
+  }
+  type Lencana {
+    id: Int!
+    nama: String!
+    deskripsi: String!
+    gambar: String!
+    users: [User]
+  }
+  type Laporan {
+    id: Int!
+    user: [User]
+    judul: String!
+    isi: String!
+  }
+  type Langganan {
+    id: Int!
+    users: [User]
+    nama: String!
+    harga: Int!
+  }
+  type Tantangan {
+    id: Int!
+    user: [User]
+    nama: String!
+    exp: Int!
+    soal: String!
+    pertanyaan: String!
+    kunci_jawaban: String!
+    url_gambar: String!
+  }
+
+  type UserTantangan {
+    user_id: User
+    tantangan_id: Tantangan
+    is_approved: Boolean!
+    jawaban: String!
+  }
+
+  type Cerita {
+    id: Int!
+    judul: String!
+    deskripsi: String!
+    url_isi: String!
+    url_gambar: String!
+  }
+
+  type Artikel {
+    id: Int!
+    kategori: Kategori
+    judul: String!
+    isi: String!
+    url_gambar: String!
+  }
+
+  type Kategori {
+    id: Int!
+    nama: String!
+    artikel: [Artikel]
+  }
+
+  type Laporan {
+    id: Int!
+    user: User
+    judul: String!
+    isi: String!
+  }
+
+  type Langganan {
+    id: Int!
+    users: [User]
+    nama: String!
+    harga: Float!
+    durasi: Int!
+  }
+
   type Query {
     users: [User!]!
+    user(id: Int!): User
     levels: [Level!]!
     user_levels: [UserLevel!]!
+    riwayat_belajars: [RiwayatBelajar!]!
+    riwayat_belajar(user_id: Int!): RiwayatBelajar
+    lencanas: [Lencana!]!
+    lencana(id: Int!): Lencana
+    tantangans: [Tantangan!]!
+    tantangan(id: Int!): Tantangan
+    user_tantangans: [UserTantangan!]!
+    user_tantangan(user_id: Int!): UserTantangan
+    ceritas: [Cerita!]!
+    cerita(id: Int!): Cerita
+    artikels: [Artikel!]!
+    artikel(id: Int!): Artikel
+    kategoris: [Kategori!]!
+    kategori(id: Int!): Kategori
+    laporans: [Laporan!]!
+    laporan(id: Int!): Laporan
+    langganans: [Langganan!]!
+    langganan(id: Int!): Langganan
   }
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
@@ -39,13 +141,95 @@ const types = gql`
       email: String!
       password: String!
     ): User!
-    deleteUser(id: Int!): Boolean!
+
+    updateUser(
+      id: Int!
+      name: String!
+      email: String!
+      password: String!
+      exp: Int
+      level: Int
+      jumlah_scan: Int
+    ): User!
+
+    createRiwayatBelajar(
+      user_id: Int!
+      nomor_modul: Int!
+      nomor_pelajaran: Int!
+    ): RiwayatBelajar!
+
+    createUserLencana(user_id: Int!, lencana_id: Int!): UserLencana!
+
+    createLencana(nama: String!, url_gambar: String!): Lencana!
+
+    createUserTantangan(user_id: Int!, tantangan_id: Int!): UserTantangan!
+
+    updateUserTantangan(
+      user_id: Int!
+      tantangan_id: Int!
+      jawaban: String!
+    ): UserTantangan!
+
+    createTantangan(
+      nama: String!
+      exp: Int!
+      soal: String!
+      pertanyaan: String!
+      kunci_jawaban: String!
+      url_gambar: String!
+    ): Tantangan!
+
+    updateTantangan(
+      id: Int!
+      nama: String!
+      exp: Int!
+      soal: String!
+      pertanyaan: String!
+      kunci_jawaban: String!
+      url_gambar: String!
+    ): Tantangan!
+
+    createLevel(nama: String!): Level!
+    
+    createUserLevel(user_id: Int!, level_id: Int!): UserLevel!
+    createCerita(
+      judul: String!
+      deskripsi: String!
+      url_isi: String!
+      url_gambar: String!
+    ): Cerita!
+
+    createArtikel(
+      kategori_id: Int!
+      judul: String!
+      isi: String!
+      url_gambar: String!
+    ): Artikel!
+
+    updateArtikel(
+      id: Int!
+      kategori_id: Int!
+      judul: String!
+      isi: String!
+      url_gambar: String!
+    ): Artikel!
+
+    createLaporan(user_id: Int!, judul: String!, isi: String!): Laporan!
+
+    updateLaporan(
+      id: Int!
+      user_id: Int!
+      judul: String!
+      isi: String!
+    ): Laporan!
+    
+    # deleteUser(id: Int!): Boolean!
     createLevel(nama: String!): Level!
     updateLevel(id: Int!, nama: String!): Level!
-    deleteLevel(id: Int!): Boolean!
-    createUserLevel(user_id: Int!, level_id: Int!): UserLevel!
-    deleteUserLevel(user_id: Int!, level_id: Int!): Boolean!
-    updateUserLevel(user_id: Int!, level_id: Int!): UserLevel!
+    # deleteLevel(id: Int!): Boolean!
+    # createUserLevel(user_id: Int!, level_id: Int!): UserLevel!
+    # deleteUserLevel(user_id: Int!, level_id: Int!): Boolean!
+    # updateUserLevel(user_id: Int!, level_id: Int!): UserLevel!
   }
 `;
 
