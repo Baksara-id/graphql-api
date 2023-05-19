@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Level',
       tableName: 'levels',
+      timestamps: true,
     }
   );
   Level.associate = (models) => {
