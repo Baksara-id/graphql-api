@@ -9,11 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     UserLencana.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true, // Mark 'id' as the primary key
-            autoIncrement: true,
-        },
         user_id: {
             type: DataTypes.INTEGER,
         },
@@ -23,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: "UserLencana",
-        timestamps: true,
+        tableName: "user_lencana",
+        // timestamps: true,
     });
 
     UserLencana.removeAttribute('id');

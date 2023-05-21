@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
       },
       kadaluwarsa: {
-        type: DataTypes.DATETIME,
+        type: DataTypes.DATE,
         allowNull: true,
       },
     },
@@ -66,6 +66,13 @@ module.exports = (sequelize, DataTypes) => {
       as: "levels",
     });
 
+    User.belongsToMany(models.Lencana, {
+      through: models.UserLencana,
+      foreignKey: "user_id",
+      as: "lencanas",
+    });
+
+
     User.hasMany(models.Laporan, {
       as: "laporans",
       foreignKey: {
@@ -81,17 +88,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.hasMany(models.RiwayatBelajar, {
-      as: "riwayat_belajar",
+      as: "riwayat_belajars",
       foreignKey: {
         name: "user_id",
       },
     });
 
-    User.belongsToMany(models.Lencana, {
-      through: models.UserLencana,
-      foreignKey: "user_id",
-      as: "lencanas",
-    });
+    
 
     User.belongsToMany(models.Tantangan, {
       through: models.UserTantangan,

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Laporan.init(
+  Langganan.init(
     {
       id: {
         type: DataTypes.INTEGER,

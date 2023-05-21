@@ -23,11 +23,12 @@ module.exports = (sequelize, DataTypes) => {
       nomor_pelajaran: {
         type: DataTypes.INTEGER,
       },
-      status: DataTypes.STRING,
+      // status: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "RiwayatBelajar",
+      tableName: "riwayat_belajars",
       timestamps: true,
     }
   );

@@ -1,4 +1,5 @@
-const { Level } = require("./models");
+const { Level, Laporan, Langganan, RiwayatBelajar, Lencana, Tantangan } = require("./models");
+// const { Level } = require("./models");
 
 const resolvers = {
   Query: {
@@ -6,32 +7,41 @@ const resolvers = {
       // console.log(s);
       return await User.findAll({
         // terus tak tambahi include iki pas query
-        include: [
-          {
-            model: Level,
-            as: "levels",
-          },
-          {
-            model: Laporan,
-            as: "laporans",
-          },
-          {
-            model: Langganan,
-            as: "langganans",
-          },
-          {
-            model: RiwayatBelajar,
-            as: "riwayat_belajars",
-          },
-          {
-            model: Lencana,
-            as: "lencanas",
-          },
-          {
-            model: Tantangan,
-            as: "tantangans",
-          },
-        ],
+        include: {
+          all:true
+        }
+        // include: [
+        //   {
+        //     model: Laporan,
+        //     as: "laporans",
+        //     required: false
+        //   },
+        //   {
+        //     model: Level,
+        //     as: "levels",
+        //     required: false
+        //   },
+        //   {
+        //     model: Langganan,
+        //     as: "langganan",
+        //     required: false
+        //   },
+        //   {
+        //     model: RiwayatBelajar,
+        //     as: "riwayat_belajars",
+        //     required: false
+        //   },
+        //   {
+        //     model: Lencana,
+        //     as: "lencanas",
+        //     required: false
+        //   },
+        //   {
+        //     model: Tantangan,
+        //     as: "tantangans",
+        //     required: false
+        //   },
+        // ],
       });
     },
 
@@ -368,7 +378,7 @@ const resolvers = {
 
     async createArtikel(
       _,
-      { judul, deskripsi, kategori_id, isi, url_gambar },
+      { judul, kategori_id, isi, url_gambar },
       { Artikel }
     ) {
       return await Artikel.create({
