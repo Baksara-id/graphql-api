@@ -66,8 +66,8 @@ const types = gql`
   }
 
   type UserTantangan {
-    user_id: User
-    tantangan_id: Tantangan
+    user: User
+    tantangan: Tantangan
     is_approved: Boolean!
     jawaban: String!
   }

@@ -1,4 +1,4 @@
-const { Level, Laporan, Langganan, RiwayatBelajar, Lencana, Tantangan } = require("./models");
+const { Level, Laporan, Langganan, RiwayatBelajar, Lencana, Tantangan, User } = require("./models");
 // const { Level } = require("./models");
 
 const resolvers = {
@@ -46,37 +46,18 @@ const resolvers = {
     },
 
     async user(_, { id }) {
-      return await User.findAll({
-        where: {
-          id: id,
+      const q = await User.findOne({
+        where : {
+          id : id
         },
         include: [
           {
-            model: Level,
-            as: "levels",
-          },
-          {
-            model: Laporan,
-            as: "laporans",
-          },
-          {
-            model: Langganan,
-            as: "langganans",
-          },
-          {
-            model: RiwayatBelajar,
-            as: "riwayat_belajars",
-          },
-          {
-            model: Lencana,
-            as: "lencanas",
-          },
-          {
-            model: Tantangan,
-            as: "tantangans",
-          },
+            all: true
+          }
         ],
       });
+      // console.log(q);
+      return q;
     },
     async levels(_, __, { Level }) {
       return await Level.findAll();
@@ -93,7 +74,8 @@ const resolvers = {
       });
     },
     async riwayat_belajar(_, { user_id }, { RiwayatBelajar }) {
-      return await RiwayatBelajar.findAll({
+
+      const c = await RiwayatBelajar.findOne({
         where: {
           user_id: user_id,
         },
@@ -105,7 +87,13 @@ const resolvers = {
           model: User,
           as: "user",
         },
-      })[0];
+      })
+      // [0]
+      ;
+
+      console.log(c);
+
+      return c;
     },
 
     async lencanas(_, __, { Lencana }) {
@@ -158,10 +146,16 @@ const resolvers = {
         where: {
           user_id: user_id,
         },
-        include: {
-          model: User,
-          as: "user",
-        },
+        include: [
+          {
+            model: User,
+            as: "user",
+          },
+          {
+            model: Tantangan,
+            as: "tantangan",
+          },
+        ],
       });
     },
 
@@ -170,7 +164,7 @@ const resolvers = {
     },
 
     async cerita(_, { id }, { Cerita }) {
-      return await Cerita.findAll({
+      return await Cerita.findOne({
         where: {
           id: id,
         },
@@ -190,25 +184,47 @@ const resolvers = {
     },
 
     async kategoris(_, __, { Kategori }) {
-      return await Kategori.findAll();
+      return await Kategori.findAll(
+        {
+          include: {
+            model: Artikel,
+            as: "artikels",
+          },
+        }
+      );
     },
 
     async kategori(_, { id }, { Kategori }) {
-      return await Kategori.findAll({
+      return await Kategori.findOne({
         where: {
           id: id,
+        },
+        include: {
+          model: Artikel,
+          as: "artikels",
         },
       });
     },
 
     async laporans(_, __, { Laporan }) {
-      return await Laporan.findAll();
+      return await Laporan.findAll(
+        {
+          include: {
+            model: User,
+            as: "user",
+          },
+        }
+      );
     },
 
     async laporan(_, { id }, { Laporan }) {
       return await Laporan.findAll({
         where: {
           id: id,
+        },
+        include: {
+          model: User,
+          as: "user",
         },
       });
     },
@@ -218,7 +234,7 @@ const resolvers = {
     },
 
     async langganan(_, { id }, { Langganan }) {
-      return await Langganan.findAll({
+      return await Langganan.findOne({
         where: {
           id: id,
         },
@@ -246,11 +262,22 @@ const resolvers = {
       { user_id, nomor_modul, nomor_pelajaran },
       { RiwayatBelajar }
     ) {
-      return await RiwayatBelajar.create({
+      const c = await RiwayatBelajar.create({
         user_id,
         nomor_modul,
         nomor_pelajaran,
+        // include : {
+        //   model: User,
+        //   as: "user",
+        // }
       });
+      console.log(await c.reload());
+      return await c.reload({
+        include: {
+          model: User,
+          as: "user",
+        }
+      }); 
     },
 
     async createUserLencana(_, { user_id, lencana_id }, { User }) {
@@ -294,24 +321,54 @@ const resolvers = {
       return await Lencana.create({ nama, url_gambar });
     },
 
-    async createUserTantangan(_, { user_id, tantangan_id }, { UserTantangan }) {
-      return await UserTantangan.create({ user_id, tantangan_id });
+    async createUserTantangan(_, { user_id, tantangan_id }, { User, Tantangan }) {
+      // const c = await 
+      // const c = await UserTantangan.create({ user_id, tantangan_id });
+      const tantangan = await Tantangan.findByPk(tantangan_id);
+      const user = await User.findByPk(user_id);
+      await user.addTantangans(tantangan);
+      const result = await User.findOne({
+        where : {id : user_id}, 
+        include: {
+          model: Tantangan,
+          as: "tantangans",
+        }});
+        // console.log(result.tantangans[0].UserTantangan.dataValues);
+
+      // return await result;
+      return {
+        user : user,
+        tantangan : tantangan,
+        jawaban : result.tantangans[0].UserTantangan.dataValues.jawaban == null ? "" : result.tantangans[0].UserTantangan.dataValues.jawaban,
+        is_approved : result.tantangans[0].UserTantangan.dataValues.is_approved,
+      }
     },
 
     async updateUserTantangan(
       _,
       { user_id, tantangan_id, jawaban },
-      { UserTantangan }
+      { UserTantangan, User, Tantangan }
     ) {
       const tantangan = await Tantangan.findByPk(tantangan_id);
-
-      if (tantangan.jawaban.toLowerCase() === jawaban.toLowerCase()) {
+      const user = await User.findByPk(user_id);
+      console.log(tantangan.kunci_jawaban.toLowerCase());
+      if (tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase()) {
         await UserTantangan.update(
           { user_id, tantangan_id, jawaban, is_approved: true },
           { where: { user_id, tantangan_id } }
         );
+      } else {
+        await UserTantangan.update(
+          { user_id, tantangan_id, jawaban, is_approved: false },
+          { where: { user_id, tantangan_id } }
+        );
       }
-      return await UserTantangan.findByPk(user_id, tantangan_id);
+      return await {
+        user : user,
+        tantangan : tantangan,
+        jawaban : jawaban,
+        is_approved : tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase() ? true : false,
+      };
     },
 
     async createTantangan(
