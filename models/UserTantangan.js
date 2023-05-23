@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     UserTantangan.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true, // Mark 'id' as the primary key
-            autoIncrement: true,
-        },
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     primaryKey: true, // Mark 'id' as the primary key
+        //     autoIncrement: true,
+        // },
         user_id: {
             type: DataTypes.INTEGER,
         },

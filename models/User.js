@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       level: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
+        defaultValue: 1,
       },
       jumlah_scan: {
         type: DataTypes.INTEGER,

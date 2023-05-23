@@ -7,6 +7,10 @@ const {
   Tantangan,
   User,
 } = require("./models");
+
+const { Op } = require("sequelize");
+
+// const { UserInputError } = require('graphql');
 // const { Level } = require("./models");
 const { ApolloError } = require("apollo-server-errors");
 
@@ -32,6 +36,10 @@ const resolvers = {
     },
 
     async user(_, { id }) {
+      // console.log(id);
+      // if (id == null) {
+      //   throw new ApolloError('id tidak boleh kosong', 'ID_NOT_FOUND');
+      // }
       // const queue =
       return await User.findOne({
         where: {
@@ -49,14 +57,19 @@ const resolvers = {
           return user;
         })
         .catch((err) => {
-          console.log(err.message);
+          // console.log(err.message);
           throw new ApolloError(err);
         });
       // console.log(queue);
       // return queue;
     },
     async levels(_, __, { Level }) {
-      return await Level.findAll()
+      return await Level.findAll({
+        include: {
+          all: true,
+          required: false,
+        },
+      })
         .then((levels) => {
           // console.log(levels);
           return levels;
@@ -71,6 +84,10 @@ const resolvers = {
         where: {
           id: id,
         },
+        include: {
+          all: true,
+          required: false,
+        },
       })
         .then((level) => {
           // console.log(level);
@@ -81,17 +98,17 @@ const resolvers = {
           throw new ApolloError(err);
         });
     },
-    async user_levels(_, __, { UserLevel }) {
-      return await UserLevel.findAll()
-        .then((user_levels) => {
-          // console.log(user_levels);
-          return user_levels;
-        })
-        .catch((err) => {
-          // console.log(err);
-          throw new ApolloError(err);
-        });
-    },
+    // async user_levels(_, __, { UserLevel }) {
+    //   return await UserLevel.findAll()
+    //     .then((user_levels) => {
+    //       // console.log(user_levels);
+    //       return user_levels;
+    //     })
+    //     .catch((err) => {
+    //       // console.log(err);
+    //       throw new ApolloError(err);
+    //     });
+    // },
     async riwayat_belajars(_, __, { RiwayatBelajar }) {
       return await RiwayatBelajar.findAll({
         include: {
@@ -110,7 +127,7 @@ const resolvers = {
         });
     },
     async riwayat_belajar(_, { user_id }, { RiwayatBelajar }) {
-      const riwayat = await RiwayatBelajar.findOne({
+      return await RiwayatBelajar.findOne({
         where: {
           user_id: user_id,
         },
@@ -133,7 +150,7 @@ const resolvers = {
           throw new ApolloError(err);
         });
       // [0]
-      return riwayat;
+      // return riwayat;
     },
 
     async lencanas(_, __, { Lencana }) {
@@ -159,8 +176,7 @@ const resolvers = {
           id: id,
         },
         include: {
-          model: User,
-          as: "users",
+          all: true,
           required: false,
         },
       })
@@ -174,22 +190,104 @@ const resolvers = {
         });
     },
 
-    async tantangans(_, __, { Tantangan }) {
-      return await Tantangan.findAll({
+    async tantangans(_, { user_id }, { User, Tantangan }) {
+      const user = await User.findByPk(user_id, {
         include: {
-          model: User,
-          as: "users",
+          model: Tantangan,
+          as: "tantangans",
           required: false,
         },
-      })
-        .then((tantangans) => {
-          // console.log(tantangans);
-          return tantangans;
-        })
-        .catch((err) => {
-          // console.log(err);
-          throw new ApolloError(err);
-        });
+      });
+      // console.log(user.tantangans);
+      const tantangan_ids = [];
+      user.tantangans.forEach((element) => {
+        tantangan_ids.push(element.id);
+      });
+
+      const tantangans = await Tantangan.findAll({
+        where: {
+          id: {
+            [Op.notIn]: tantangan_ids,
+          },
+        },
+        include: {
+          all: true,
+          required: false,
+        },
+      });
+      return tantangans;
+    },
+
+    async getTantangans(_, { user_id }, { User, Tantangan }) {
+      const user = await User.findByPk(user_id, {
+        include: {
+          model: Tantangan,
+          as: "tantangans",
+          required: false,
+        },
+      });
+      // console.log(user.tantangans);
+      const tantangan_ids = [];
+      user.tantangans.forEach((element) => {
+        tantangan_ids.push(element.id);
+      });
+
+      const tantangans = await Tantangan.findAll({
+        where: {
+          id: {
+            [Op.notIn]: tantangan_ids,
+          },
+        },
+        limit: 3,
+        include: {
+          all: true,
+          required: false,
+        },
+      });
+      return tantangans;
+    },
+
+    async riwayat_tantangans(
+      _,
+      { user_id },
+      { Tantangan, UserTantangan }
+    ) {
+      const user_tantangan = await UserTantangan.findAll({
+        where: {
+          user_id: user_id,
+        },
+        order: [["createdAt", "DESC"]],
+      });
+
+      const tantangans = [];
+      user_tantangan.forEach((element) => {
+        tantangans.push(
+          Tantangan.findByPk(element.tantangan_id, {
+            include: {
+              all: true,
+              required: false,
+            },
+          })
+        );
+      });
+      // console.log(tantangan_ids);
+      return tantangans;
+    },
+
+    async user_lencanas (_, { user_id }, { User, Lencana }) {
+      const user = await User.findByPk(user_id, {
+        include: {
+          model: Lencana,
+          as: "lencanas",
+          required: false,
+          order: [["id", "ASC"]],
+        },
+      });
+
+      // user.lencanas.forEach((element) => {
+      //   console.log(element.id);
+      // });
+      return user.lencanas;
     },
 
     async tantangan(_, { id }, { Tantangan }) {
@@ -198,8 +296,8 @@ const resolvers = {
           id: id,
         },
         include: {
-          model: User,
-          as: "users",
+          all: true,
+          required: false,
         },
       })
         .then((tantangan) => {
@@ -330,9 +428,14 @@ const resolvers = {
     },
 
     async artikels(_, __, { Artikel }) {
-      return await Artikel.findAll()
+      return await Artikel.findAll({
+        include: {
+          all: true,
+          required: false,
+        },
+      })
         .then((artikels) => {
-          // console.log(artikels);
+          console.log(artikels);
           return artikels;
         })
         .catch((err) => {
@@ -342,9 +445,13 @@ const resolvers = {
     },
 
     async artikel(_, { id }, { Artikel }) {
-      return await Artikel.findAll({
+      return await Artikel.findOne({
         where: {
           id: id,
+        },
+        include: {
+          all: true,
+          required: false,
         },
       })
         .then((artikel) => {
@@ -360,8 +467,8 @@ const resolvers = {
     async kategoris(_, __, { Kategori }) {
       return await Kategori.findAll({
         include: {
-          model: Artikel,
-          as: "artikels",
+          all: true,
+          required: false,
         },
       })
         .then((kategoris) => {
@@ -380,8 +487,8 @@ const resolvers = {
           id: id,
         },
         include: {
-          model: Artikel,
-          as: "artikels",
+          all: true,
+          required: false,
         },
       })
         .then((kategori) => {
@@ -433,7 +540,12 @@ const resolvers = {
     },
 
     async langganans(_, __, { Langganan }) {
-      return await Langganan.findAll()
+      return await Langganan.findAll({
+        include: {
+          all: true,
+          required: false,
+        },
+      })
         .then((langganans) => {
           // console.log(langganans);
           return langganans;
@@ -448,6 +560,10 @@ const resolvers = {
       return await Langganan.findOne({
         where: {
           id: id,
+        },
+        include: {
+          all: true,
+          required: false,
         },
       })
         .then((langganan) => {
@@ -500,9 +616,11 @@ const resolvers = {
     },
 
     async createUserLencana(_, { user_id, lencana_id }, { User }) {
-      User.addLencanas(user_id, lencana_id);
-      return await User.findAll({
-        where: { user_id },
+      const user = await User.findByPk(user_id);
+      const lencana = await Lencana.findByPk(lencana_id);
+      user.addLencanas(lencana);
+      return await User.findOne({
+        where: { id: user_id },
         include: {
           all: true,
           required: false,
@@ -520,21 +638,33 @@ const resolvers = {
 
     async createUserTantangan(
       _,
-      { user_id, tantangan_id },
+      { user_id, tantangan_id, jawaban },
       { User, Tantangan, UserTantangan }
     ) {
       // const c = await
       // const c = await UserTantangan.create({ user_id, tantangan_id });
+      // const check = await UserTantangan.findAll()
       const tantangan = await Tantangan.findByPk(tantangan_id);
       const user = await User.findByPk(user_id);
       await user.addTantangans(tantangan);
+      if (tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase()) {
+        await UserTantangan.update(
+          { user_id, tantangan_id, jawaban, is_approved: true },
+          { where: { user_id, tantangan_id } }
+        );
+      } else {
+        await UserTantangan.update(
+          { user_id, tantangan_id, jawaban, is_approved: false },
+          { where: { user_id, tantangan_id } }
+        );
+      }
       const result = await UserTantangan.findOne({
         where: { user_id: user_id, tantangan_id: tantangan_id },
         order: [["createdAt", "DESC"]],
       });
       // console.log(result.tantangans);
-      console.log(result.createdAt);
-      console.log(result.updatedAt);
+      // console.log(result.createdAt);
+      // console.log(result.updatedAt);
 
       // return await result;
       return {
@@ -545,7 +675,7 @@ const resolvers = {
       };
     },
 
-    async updateUserTantangan(
+    /* async updateUserTantangan(
       _,
       { user_id, tantangan_id, jawaban },
       { UserTantangan, User, Tantangan }
@@ -573,18 +703,18 @@ const resolvers = {
             ? true
             : false,
       };
-    },
+    }, */
 
     async createTantangan(
       _,
-      { nama, exp, soal, pertanyaaan, kunci_jawaban, url_gambar },
+      { nama, exp, soal, pertanyaan, kunci_jawaban, url_gambar },
       { Tantangan }
     ) {
       return await Tantangan.create({
         nama,
         exp,
         soal,
-        pertanyaaan,
+        pertanyaan,
         kunci_jawaban,
         url_gambar,
       });
@@ -592,18 +722,31 @@ const resolvers = {
 
     async updateTantangan(
       _,
-      { id, nama, exp, soal, pertanyaaan, kunci_jawaban, url_gambar },
+      { id, nama, exp, soal, pertanyaan, kunci_jawaban, url_gambar },
       { Tantangan }
     ) {
       await Tantangan.update(
-        { nama, deskripsi, exp, soal, pertanyaaan, kunci_jawaban, url_gambar },
+        { nama, deskripsi, exp, soal, pertanyaan, kunci_jawaban, url_gambar },
         { where: { id } }
       );
-      return await Tantangan.findByPk(id);
+      return await Tantangan.findOne({
+        where: { id },
+        include: {
+          all: true,
+          required: false,
+        },
+      });
     },
 
     async createLevel(_, { nama }, { Level }) {
-      return await Level.create({ nama });
+      const level = await Level.create({ nama });
+
+      return level.reload({
+        include: {
+          all: true,
+          required: false,
+        },
+      });
     },
     /* async updateLevel(_, { id, nama }, { Level }) {
       await Level.update({ nama }, { where: { id } });
@@ -642,11 +785,18 @@ const resolvers = {
       { judul, kategori_id, isi, url_gambar },
       { Artikel }
     ) {
-      return await Artikel.create({
+      const artikel = await Artikel.create({
         judul,
         kategori_id,
         isi,
         url_gambar,
+      });
+
+      return artikel.reload({
+        include: {
+          all: true,
+          required: false,
+        },
       });
     },
 
@@ -659,7 +809,13 @@ const resolvers = {
         { judul, deskripsi, kategori_id, isi, url_gambar },
         { where: { id } }
       );
-      return await Artikel.findByPk(id);
+      return await Artikel.findOne({
+        where: { id },
+        include: {
+          all: true,
+          required: false,
+        },
+      });
     },
 
     async createLaporan(_, { user_id, judul, isi }, { Laporan }) {

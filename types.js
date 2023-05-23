@@ -38,13 +38,12 @@ const types = gql`
   type Lencana {
     id: Int!
     nama: String!
-    deskripsi: String!
-    gambar: String!
+    url_gambar: String!
     users: [User]
   }
   type Laporan {
     id: Int!
-    users: [User]
+    user: User
     judul: String!
     isi: String!
   }
@@ -56,7 +55,7 @@ const types = gql`
   }
   type Tantangan {
     id: Int!
-    user: [User]
+    users: [User]
     nama: String!
     exp: Int!
     soal: String!
@@ -94,12 +93,12 @@ const types = gql`
     artikel: [Artikel]
   }
 
-  type Laporan {
-    id: Int!
-    user: User
-    judul: String!
-    isi: String!
-  }
+  # type Laporan {
+  #   id: Int!
+  #   user: User
+  #   judul: String!
+  #   isi: String!
+  # }
 
   type Langganan {
     id: Int!
@@ -113,12 +112,15 @@ const types = gql`
     users: [User!]!
     user(id: Int!): User
     levels: [Level!]!
-    user_levels: [UserLevel!]!
+    # user_levels: [UserLevel!]!
     riwayat_belajars: [RiwayatBelajar!]!
     riwayat_belajar(user_id: Int!): RiwayatBelajar
     lencanas: [Lencana!]!
     lencana(id: Int!): Lencana
+    user_lencanas(user_id: Int!): [Lencana!]!
     tantangans: [Tantangan!]!
+    riwayat_tantangans(user_id: Int!): [Tantangan!]!
+    getTantangans: [Tantangan!]!
     tantangan(id: Int!): Tantangan
     user_tantangans: [UserTantangan!]!
     user_tantangan(user_id: Int!, tantangan_id: Int!): UserTantangan
@@ -163,13 +165,13 @@ const types = gql`
 
     createLencana(nama: String!, url_gambar: String!): Lencana!
 
-    createUserTantangan(user_id: Int!, tantangan_id: Int!): UserTantangan!
+    createUserTantangan(user_id: Int!, tantangan_id: Int!, jawaban: String!): UserTantangan!
 
-    updateUserTantangan(
-      user_id: Int!
-      tantangan_id: Int!
-      jawaban: String!
-    ): UserTantangan!
+    # updateUserTantangan(
+    #   user_id: Int!
+    #   tantangan_id: Int!
+    #   jawaban: String!
+    # ): UserTantangan!
 
     createTantangan(
       nama: String!

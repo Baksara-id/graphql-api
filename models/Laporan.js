@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        // allowNull: true,
       },
       judul: DataTypes.STRING,
       isi: DataTypes.TEXT,
