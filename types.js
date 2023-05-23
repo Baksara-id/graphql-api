@@ -121,7 +121,7 @@ const types = gql`
     tantangans: [Tantangan!]!
     tantangan(id: Int!): Tantangan
     user_tantangans: [UserTantangan!]!
-    user_tantangan(user_id: Int!): UserTantangan
+    user_tantangan(user_id: Int!, tantangan_id: Int!): UserTantangan
     ceritas: [Cerita!]!
     cerita(id: Int!): Cerita
     artikels: [Artikel!]!
@@ -132,6 +132,7 @@ const types = gql`
     laporan(id: Int!): Laporan
     langganans: [Langganan!]!
     langganan(id: Int!): Langganan
+    level(id: Int!): Level
   }
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!

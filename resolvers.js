@@ -1,5 +1,14 @@
-const { Level, Laporan, Langganan, RiwayatBelajar, Lencana, Tantangan, User } = require("./models");
+const {
+  Level,
+  Laporan,
+  Langganan,
+  RiwayatBelajar,
+  Lencana,
+  Tantangan,
+  User,
+} = require("./models");
 // const { Level } = require("./models");
+const { ApolloError } = require("apollo-server-errors");
 
 const resolvers = {
   Query: {
@@ -8,74 +17,100 @@ const resolvers = {
       return await User.findAll({
         // terus tak tambahi include iki pas query
         include: {
-          all:true
-        }
-        // include: [
-        //   {
-        //     model: Laporan,
-        //     as: "laporans",
-        //     required: false
-        //   },
-        //   {
-        //     model: Level,
-        //     as: "levels",
-        //     required: false
-        //   },
-        //   {
-        //     model: Langganan,
-        //     as: "langganan",
-        //     required: false
-        //   },
-        //   {
-        //     model: RiwayatBelajar,
-        //     as: "riwayat_belajars",
-        //     required: false
-        //   },
-        //   {
-        //     model: Lencana,
-        //     as: "lencanas",
-        //     required: false
-        //   },
-        //   {
-        //     model: Tantangan,
-        //     as: "tantangans",
-        //     required: false
-        //   },
-        // ],
-      });
+          all: true,
+          required: false,
+        },
+      })
+        .then((users) => {
+          // console.log(users);
+          return users;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async user(_, { id }) {
-      const q = await User.findOne({
-        where : {
-          id : id
+      // const queue =
+      return await User.findOne({
+        where: {
+          id: id,
         },
         include: [
           {
-            all: true
-          }
+            all: true,
+            required: false,
+          },
         ],
-      });
-      // console.log(q);
-      return q;
+      })
+        .then((user) => {
+          // console.log(user);
+          return user;
+        })
+        .catch((err) => {
+          console.log(err.message);
+          throw new ApolloError(err);
+        });
+      // console.log(queue);
+      // return queue;
     },
     async levels(_, __, { Level }) {
-      return await Level.findAll();
+      return await Level.findAll()
+        .then((levels) => {
+          // console.log(levels);
+          return levels;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
+    },
+    async level(_, { id }, { Level }) {
+      return await Level.findOne({
+        where: {
+          id: id,
+        },
+      })
+        .then((level) => {
+          // console.log(level);
+          return level;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
     async user_levels(_, __, { UserLevel }) {
-      return await UserLevel.findAll();
+      return await UserLevel.findAll()
+        .then((user_levels) => {
+          // console.log(user_levels);
+          return user_levels;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
     async riwayat_belajars(_, __, { RiwayatBelajar }) {
       return await RiwayatBelajar.findAll({
         include: {
           model: User,
           as: "user",
+          required: false,
         },
-      });
+      })
+        .then((riwayat_belajars) => {
+          // console.log(riwayat_belajars);
+          return riwayat_belajars;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
     async riwayat_belajar(_, { user_id }, { RiwayatBelajar }) {
-
-      const c = await RiwayatBelajar.findOne({
+      const riwayat = await RiwayatBelajar.findOne({
         where: {
           user_id: user_id,
         },
@@ -86,14 +121,19 @@ const resolvers = {
         include: {
           model: User,
           as: "user",
+          required: false,
         },
       })
+        .then((riwayat_belajar) => {
+          // console.log(riwayat_belajar);
+          return riwayat_belajar;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
       // [0]
-      ;
-
-      console.log(c);
-
-      return c;
+      return riwayat;
     },
 
     async lencanas(_, __, { Lencana }) {
@@ -101,19 +141,37 @@ const resolvers = {
         include: {
           model: User,
           as: "users",
+          required: false,
         },
-      });
+      })
+        .then((lencanas) => {
+          // console.log(lencanas);
+          return lencanas;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
     async lencana(_, { id }, { Lencana }) {
-      return await Lencana.findAll({
+      return await Lencana.findOne({
         where: {
           id: id,
         },
         include: {
           model: User,
           as: "users",
+          required: false,
         },
-      });
+      })
+        .then((lencana) => {
+          // console.log(lencana);
+          return lencana;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async tantangans(_, __, { Tantangan }) {
@@ -121,12 +179,21 @@ const resolvers = {
         include: {
           model: User,
           as: "users",
+          required: false,
         },
-      });
+      })
+        .then((tantangans) => {
+          // console.log(tantangans);
+          return tantangans;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async tantangan(_, { id }, { Tantangan }) {
-      return await Tantangan.findAll({
+      return await Tantangan.findOne({
         where: {
           id: id,
         },
@@ -134,33 +201,116 @@ const resolvers = {
           model: User,
           as: "users",
         },
-      });
+      })
+        .then((tantangan) => {
+          // console.log(tantangan);
+          return tantangan;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async user_tantangans(_, __, { UserTantangan }) {
-      return await UserTantangan.findAll();
+      const user_tantangans = await UserTantangan.findAll();
+      // console.log(user_tantangans);
+      const all = [];
+      user_tantangans.forEach((user_tantangan) => {
+        // console.log(user_tantangan);
+        const pushUser = async () => {
+          return await User.findOne({
+            where: {
+              id: user_tantangan.user_id,
+            },
+          });
+        };
+        const pushTantangan = async () => {
+          return await Tantangan.findOne({
+            where: {
+              id: user_tantangan.tantangan_id,
+            },
+          });
+        };
+        all.push({
+          jawaban: user_tantangan.jawaban ? user_tantangan.jawaban : "",
+          is_approved:
+            user_tantangan.is_approved == null
+              ? "undefined"
+              : user_tantangan.is_approved,
+          user: pushUser(),
+          tantangan: pushTantangan(),
+        });
+      });
+
+      return all;
     },
 
-    async user_tantangan(_, { user_id }, { UserTantangan }) {
-      return await UserTantangan.findAll({
+    async user_tantangan(_, { user_id, tantangan_id }, { UserTantangan }) {
+      const user_tantangan = await UserTantangan.findOne({
         where: {
           user_id: user_id,
+          tantangan_id: tantangan_id,
         },
-        include: [
-          {
-            model: User,
-            as: "user",
-          },
-          {
-            model: Tantangan,
-            as: "tantangan",
-          },
-        ],
-      });
+      })
+        .then((user_tantangan) => {
+          // console.log(user_tantangan);
+          return user_tantangan;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
+
+      const user = await User.findOne({
+        where: {
+          id: user_id,
+        },
+      })
+        .then((user) => {
+          // console.log(user);
+          return user;
+        })
+        .catch((err) => {
+          // console.log(err);
+          throw new ApolloError(err);
+        });
+
+      const tantangan = await Tantangan.findOne({
+        where: {
+          id: tantangan_id,
+        },
+      })
+        .then((tantangan) => {
+          // console.log(tantangan);
+          return tantangan;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
+
+      return {
+        is_approved:
+          user_tantangan.is_approved == null
+            ? "undefined"
+            : user_tantangan.is_approved,
+        jawaban: user_tantangan.jawaban == null ? "" : user_tantangan.jawaban,
+        user: user,
+        tantangan: tantangan,
+      };
     },
 
     async ceritas(_, __, { Cerita }) {
-      return await Cerita.findAll();
+      return await Cerita.findAll()
+        .then((ceritas) => {
+          // console.log(ceritas);
+          return ceritas;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async cerita(_, { id }, { Cerita }) {
@@ -168,11 +318,27 @@ const resolvers = {
         where: {
           id: id,
         },
-      });
+      })
+        .then((cerita) => {
+          // console.log(cerita);
+          return cerita;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async artikels(_, __, { Artikel }) {
-      return await Artikel.findAll();
+      return await Artikel.findAll()
+        .then((artikels) => {
+          // console.log(artikels);
+          return artikels;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async artikel(_, { id }, { Artikel }) {
@@ -180,18 +346,32 @@ const resolvers = {
         where: {
           id: id,
         },
-      });
+      })
+        .then((artikel) => {
+          // console.log(artikel);
+          return artikel;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async kategoris(_, __, { Kategori }) {
-      return await Kategori.findAll(
-        {
-          include: {
-            model: Artikel,
-            as: "artikels",
-          },
-        }
-      );
+      return await Kategori.findAll({
+        include: {
+          model: Artikel,
+          as: "artikels",
+        },
+      })
+        .then((kategoris) => {
+          // console.log(kategoris);
+          return kategoris;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async kategori(_, { id }, { Kategori }) {
@@ -203,34 +383,65 @@ const resolvers = {
           model: Artikel,
           as: "artikels",
         },
-      });
+      })
+        .then((kategori) => {
+          // console.log(kategori);
+          return kategori;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async laporans(_, __, { Laporan }) {
-      return await Laporan.findAll(
-        {
-          include: {
-            model: User,
-            as: "user",
-          },
-        }
-      );
+      return await Laporan.findAll({
+        include: {
+          model: User,
+          as: "user",
+        },
+      })
+        .then((laporans) => {
+          // console.log(laporans);
+          return laporans;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async laporan(_, { id }, { Laporan }) {
-      return await Laporan.findAll({
+      return await Laporan.findOne({
         where: {
           id: id,
         },
         include: {
           model: User,
           as: "user",
+          required: false,
         },
-      });
+      })
+        .then((laporan) => {
+          // console.log(laporan);
+          return laporan;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async langganans(_, __, { Langganan }) {
-      return await Langganan.findAll();
+      return await Langganan.findAll()
+        .then((langganans) => {
+          // console.log(langganans);
+          return langganans;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
 
     async langganan(_, { id }, { Langganan }) {
@@ -238,7 +449,15 @@ const resolvers = {
         where: {
           id: id,
         },
-      });
+      })
+        .then((langganan) => {
+          // console.log(langganan);
+          return langganan;
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new ApolloError(err);
+        });
     },
   },
   Mutation: {
@@ -276,40 +495,18 @@ const resolvers = {
         include: {
           model: User,
           as: "user",
-        }
-      }); 
+        },
+      });
     },
 
     async createUserLencana(_, { user_id, lencana_id }, { User }) {
       User.addLencanas(user_id, lencana_id);
       return await User.findAll({
         where: { user_id },
-        include: [
-          {
-            model: Level,
-            as: "levels",
-          },
-          {
-            model: Laporan,
-            as: "laporans",
-          },
-          {
-            model: Langganan,
-            as: "langganans",
-          },
-          {
-            model: RiwayatBelajar,
-            as: "riwayat_belajars",
-          },
-          {
-            model: Lencana,
-            as: "lencanas",
-          },
-          {
-            model: Tantangan,
-            as: "tantangans",
-          },
-        ],
+        include: {
+          all: true,
+          required: false,
+        },
       });
     },
     // async deleteUser(_, { id }, { User }) {
@@ -321,27 +518,31 @@ const resolvers = {
       return await Lencana.create({ nama, url_gambar });
     },
 
-    async createUserTantangan(_, { user_id, tantangan_id }, { User, Tantangan }) {
-      // const c = await 
+    async createUserTantangan(
+      _,
+      { user_id, tantangan_id },
+      { User, Tantangan, UserTantangan }
+    ) {
+      // const c = await
       // const c = await UserTantangan.create({ user_id, tantangan_id });
       const tantangan = await Tantangan.findByPk(tantangan_id);
       const user = await User.findByPk(user_id);
       await user.addTantangans(tantangan);
-      const result = await User.findOne({
-        where : {id : user_id}, 
-        include: {
-          model: Tantangan,
-          as: "tantangans",
-        }});
-        // console.log(result.tantangans[0].UserTantangan.dataValues);
+      const result = await UserTantangan.findOne({
+        where: { user_id: user_id, tantangan_id: tantangan_id },
+        order: [["createdAt", "DESC"]],
+      });
+      // console.log(result.tantangans);
+      console.log(result.createdAt);
+      console.log(result.updatedAt);
 
       // return await result;
       return {
-        user : user,
-        tantangan : tantangan,
-        jawaban : result.tantangans[0].UserTantangan.dataValues.jawaban == null ? "" : result.tantangans[0].UserTantangan.dataValues.jawaban,
-        is_approved : result.tantangans[0].UserTantangan.dataValues.is_approved,
-      }
+        user: user,
+        tantangan: tantangan,
+        jawaban: result.jawaban == null ? "" : result.jawaban,
+        is_approved: result.is_approved,
+      };
     },
 
     async updateUserTantangan(
@@ -351,7 +552,7 @@ const resolvers = {
     ) {
       const tantangan = await Tantangan.findByPk(tantangan_id);
       const user = await User.findByPk(user_id);
-      console.log(tantangan.kunci_jawaban.toLowerCase());
+      // console.log(tantangan.kunci_jawaban.toLowerCase());
       if (tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase()) {
         await UserTantangan.update(
           { user_id, tantangan_id, jawaban, is_approved: true },
@@ -364,10 +565,13 @@ const resolvers = {
         );
       }
       return await {
-        user : user,
-        tantangan : tantangan,
-        jawaban : jawaban,
-        is_approved : tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase() ? true : false,
+        user: user,
+        tantangan: tantangan,
+        jawaban: jawaban,
+        is_approved:
+          tantangan.kunci_jawaban.toLowerCase() === jawaban.toLowerCase()
+            ? true
+            : false,
       };
     },
 
