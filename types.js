@@ -3,11 +3,9 @@ const { ApolloServer, gql } = require("apollo-server");
 const types = gql`
   type User {
     id: Int!
-    # langganan_id: Int
     name: String!
     email: String!
     password: String!
-    # sek yo, iki sg bawah2 mari tak edit disek
     avatar: String
     exp: Int!
     level: Int!
@@ -93,13 +91,6 @@ const types = gql`
     artikel: [Artikel]
   }
 
-  # type Laporan {
-  #   id: Int!
-  #   user: User
-  #   judul: String!
-  #   isi: String!
-  # }
-
   type Langganan {
     id: Int!
     users: [User]
@@ -138,12 +129,6 @@ const types = gql`
   }
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
-    # updateUser(
-    #   id: Int!
-    #   name: String!
-    #   email: String!
-    #   password: String!
-    # ): User!
 
     updateUser(
       id: Int!
@@ -165,13 +150,11 @@ const types = gql`
 
     createLencana(nama: String!, url_gambar: String!): Lencana!
 
-    createUserTantangan(user_id: Int!, tantangan_id: Int!, jawaban: String!): UserTantangan!
-
-    # updateUserTantangan(
-    #   user_id: Int!
-    #   tantangan_id: Int!
-    #   jawaban: String!
-    # ): UserTantangan!
+    createUserTantangan(
+      user_id: Int!
+      tantangan_id: Int!
+      jawaban: String!
+    ): UserTantangan!
 
     createTantangan(
       nama: String!
@@ -193,7 +176,7 @@ const types = gql`
     ): Tantangan!
 
     createLevel(nama: String!): Level!
-    
+
     createUserLevel(user_id: Int!, level_id: Int!): UserLevel!
     createCerita(
       judul: String!
@@ -225,14 +208,8 @@ const types = gql`
       judul: String!
       isi: String!
     ): Laporan!
-    
-    # deleteUser(id: Int!): Boolean!
-    # createLevel(nama: String!): Level!
+
     updateLevel(id: Int!, nama: String!): Level!
-    # deleteLevel(id: Int!): Boolean!
-    # createUserLevel(user_id: Int!, level_id: Int!): UserLevel!
-    # deleteUserLevel(user_id: Int!, level_id: Int!): Boolean!
-    # updateUserLevel(user_id: Int!, level_id: Int!): UserLevel!
   }
 `;
 
