@@ -1,3 +1,7 @@
+const { ApolloError } = require('apollo-server-errors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const users = async (_, __, { User }) => {
   return await User.findAll({
     include: {
@@ -35,7 +39,46 @@ const user = async (_, { id }) => {
 };
 
 const createUser = async (_, { name, email, password }, { User }) => {
-  return await User.create({ name, email, password });
+  const oldUser = await User.findOne({ where: { email } });
+  if (oldUser) {
+    throw new ApolloError(
+      'Email sudah terdaftar with the email' + email,
+      'USER_ALREADY_EXISTS'
+    );
+  }
+  var encryptedPassword = await bcrypt.hash(password, 12);
+  const newUser = new User({
+    name: name,
+    email: email.toLowerCase(),
+    password: encryptedPassword,
+  });
+  const token = jwt.sign({ user_id: newUser.id, email }, 'baksaratampan', {
+    expiresIn: '2h',
+  });
+  newUser.token = token;
+  const res = await newUser.save();
+  return {
+    id: res.id,
+    name: res.name,
+    email: res.email,
+    token: res.token,
+  };
+};
+const loginUser = async (_, { email, password }, { User }) => {
+  const user = await User.findOne({ where: { email } });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const token = jwt.sign({ user_id: user.id, email }, 'baksaratampan', {
+      expiresIn: '2h',
+    });
+    user.token = token;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token: user.token,
+    };
+  }
+  throw new ApolloError('Invalid credentials', 'INVALID_CREDENTIALS');
 };
 const updateUser = async (
   _,
@@ -74,6 +117,7 @@ module.exports = {
   users,
   user,
   createUser,
+  loginUser,
   updateUser,
   createUserLencana,
   createUserLevel,

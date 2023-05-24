@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql } = require('apollo-server');
 
 const types = gql`
   type User {
@@ -6,6 +6,7 @@ const types = gql`
     name: String!
     email: String!
     password: String!
+    token: String
     avatar: String
     exp: Int!
     level: Int!
@@ -129,6 +130,8 @@ const types = gql`
   }
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
+
+    loginUser(email: String!, password: String!): User!
 
     updateUser(
       id: Int!

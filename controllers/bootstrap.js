@@ -2,25 +2,26 @@ const {
   users,
   user,
   createUser,
+  loginUser,
   updateUser,
   createUserLencana,
   createUserLevel,
-} = require("./UserController");
+} = require('./UserController');
 
-const { levels, level, createLevel } = require("./LevelController");
+const { levels, level, createLevel } = require('./LevelController');
 
 const {
   riwayat_belajars,
   riwayat_belajar,
   createRiwayatBelajar,
-} = require("./RiwayatBelajarController");
+} = require('./RiwayatBelajarController');
 
 const {
   lencanas,
   lencana,
   user_lencanas,
   createLencana,
-} = require("./LencanaController");
+} = require('./LencanaController');
 
 const {
   tantangans,
@@ -29,45 +30,39 @@ const {
   createTantangan,
   updateTantangan,
   riwayat_tantangans,
-} = require("./TantanganController");
+} = require('./TantanganController');
 
 const {
   user_tantangans,
   user_tantangan,
   createUserTantangan,
-} = require("./UserTantanganController");
+} = require('./UserTantanganController');
 
 const {
   createArtikel,
   updateArtikel,
   artikel,
   artikels,
-} = require("./ArtikelController");
+} = require('./ArtikelController');
 
-const {
-  ceritas,
-  cerita,
-  createCerita,
-} = require("./CeritaController");
+const { ceritas, cerita, createCerita } = require('./CeritaController');
 
-const { kategoris, kategori } = require("./KategoriController");
+const { kategoris, kategori } = require('./KategoriController');
 
 const {
   createLaporan,
   updateLaporan,
   laporans,
   laporan,
-} = require("./LaporanController");
+} = require('./LaporanController');
 
-const {
-  langganans,
-  langganan,
-} = require("./LanggananController");
+const { langganans, langganan } = require('./LanggananController');
 
 module.exports = {
   users,
   user,
   createUser,
+  loginUser,
   updateUser,
   createUserLencana,
   createUserLevel,
