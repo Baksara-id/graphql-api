@@ -18,7 +18,7 @@ const users = async (_, __, { User }) => {
     });
 };
 
-const user = async (_, { id }) => {
+const user = async (_, { id }, { User }) => {
   return await User.findOne({
     where: {
       id: id,
