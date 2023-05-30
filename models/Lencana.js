@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: "Lencana",
         timestamps: true,
+        tableName: "lencanas",
     });
 
     Lencana.associate = (models) => {
