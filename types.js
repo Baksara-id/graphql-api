@@ -112,7 +112,7 @@ const types = gql`
     user_lencanas(user_id: Int!): [Lencana!]!
     tantangans: [Tantangan!]!
     riwayat_tantangans(user_id: Int!): [Tantangan!]!
-    getTantangans: [Tantangan!]!
+    getTantangans(user_id: Int!): [Tantangan!]!
     tantangan(id: Int!): Tantangan
     user_tantangans: [UserTantangan!]!
     user_tantangan(user_id: Int!, tantangan_id: Int!): UserTantangan

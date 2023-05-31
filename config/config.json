@@ -11,16 +11,19 @@
     },
     "test": {
         "username": "root",
-        "password": "(#!baksara_2023!#)",
+        "password": "",
         "database": "baksara",
-        "host": "34.101.54.153",
+        "host": "127.0.0.1",
         "dialect": "mysql"
     },
     "production": {
         "username": "root",
         "password": "(#!baksara_2023!#)",
-        "database": "baksara",
-        "host": "34.101.54.153",
-        "dialect": "mysql"
+        "database": "baksara_production",
+        "dialect": "mysql",
+        "host": "10.1.96.3",
+        "dialectOptions": {
+            "socketPath": "/cloudsql/testing-baksara:asia-southeast2:baksara"
+        }
     }
 }
