@@ -45,12 +45,15 @@ const createArtikel = async( _, { judul, kategori_id, isi, url_gambar }, { Artik
     url_gambar,
   });
 
-  return artikel.reload({
+  const returnArtikel = await Artikel.findOne({
+    where: { id: artikel.id },
     include: {
       all: true,
       required: false,
     },
   });
+
+  return returnArtikel;
 };
 
 const updateArtikel = async( _, { id, judul, deskripsi, kategori_id, isi, url_gambar }, { Artikel } ) => {

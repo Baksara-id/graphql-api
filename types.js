@@ -8,9 +8,9 @@ const types = gql`
     password: String!
     token: String
     avatar: String
-    exp: Int!
-    level: Int!
-    jumlah_scan: Int!
+    exp: Int
+    level: Int
+    jumlah_scan: Int
     kadaluwarsa: String
     levels: [Level]
     riwayat_belajars: [RiwayatBelajar]
