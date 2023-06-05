@@ -71,12 +71,8 @@ const loginUser = async (_, { email, password }, { User }) => {
       expiresIn: '2h',
     });
     user.token = token;
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      token: user.token,
-    };
+    const res = await user.save();
+    return res;
   }
   throw new ApolloError('Invalid credentials', 'INVALID_CREDENTIALS');
 };
