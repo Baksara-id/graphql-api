@@ -32,30 +32,35 @@ steps:
         "asia-northeast1",
       ]
 
-  # Update Cloud SQL instance to use Serverless VPC Access
-  - name: "gcr.io/cloud-builders/gcloud"
+
+  # Get the connector's fully-qualified name
+  - name: 'gcr.io/cloud-builders/gcloud'
     args:
       [
-        "sql",
-        "instances",
-        "patch",
-        "testing-baksara:asia-southeast2:baksara",
-        "--vpc-connector",
-        "projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2",
+        'compute',
+        'networks',
+        'vpc-access',
+        'connectors',
+        'describe',
+        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
+        '--region',
+        'asia-southeast2',
+        '--format',
+        'value(name)',
       ]
-      
-  # Configure Cloud SQL for private IP
-  - name: "gcr.io/cloud-builders/gcloud"
+    id: 'get-connector-name'
+    env:
+      - 'CONNECTOR_NAME=$(cat $BUILD_STEP_OUTPUT_FILE)'
+
+  # Update Cloud SQL instance to use Serverless VPC Access
+  - name: 'gcr.io/cloud-builders/gcloud'
     args:
       [
-        "sql",
-        "instances",
-        "patch",
-        "testing-baksara:asia-southeast2:baksara",
-        "--network",
-        "default",
-        "--require-ssl",
-        "--private-network-ip",
-        "10.1.96.3", # Private IP address for Cloud SQL
+        'sql',
+        'instances',
+        'patch',
+        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
+        '--vpc-connector',
+        '$CONNECTOR_NAME',
       ]
   
