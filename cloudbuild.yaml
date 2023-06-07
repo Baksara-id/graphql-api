@@ -32,7 +32,6 @@ steps:
         "asia-northeast1",
       ]
 
-
   # Get the connector's fully-qualified name
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
