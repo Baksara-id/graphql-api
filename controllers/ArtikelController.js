@@ -1,6 +1,12 @@
 const { Op } = require("sequelize");
 
+const convertTimeStamp = async(assignedDate) => {
+  const d = new Date(assignedDate);
+  return await `${d.getFullYear()}-${('0' + d.getMonth()).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`;
+}
+
 const artikels = async (_, __, { Artikel }) => {
+  const result = [];
   return await Artikel.findAll({
     include: {
       all: true,
@@ -8,8 +14,26 @@ const artikels = async (_, __, { Artikel }) => {
     },
   })
     .then((artikels) => {
-      console.log(artikels);
-      return artikels;
+      // console.log(artikels);
+      artikels.forEach(element => {
+        /* 
+          MyDateString = ('0' + MyDate.getDate()).slice(-2) + '/'
+             + ('0' + (MyDate.getMonth()+1)).slice(-2) + '/'
+             + MyDate.getFullYear();
+        */
+        date_string = convertTimeStamp(element.createdAt);
+        date_string2 = convertTimeStamp(element.updatedAt);
+        // element.createdAt = date_string;
+        result.push({
+          id: element.id,
+          judul: element.judul,
+          isi: element.isi,
+          createdAt: date_string,
+          updatedAt: date_string2
+        })
+        
+      });
+      return result;
     })
     .catch((err) => {
       console.log(err);
@@ -29,7 +53,14 @@ const artikel = async (_, { id }, { Artikel }) => {
   })
     .then((artikel) => {
       // console.log(artikel);
-      return artikel;
+      
+      return {
+        id: artikel.id,
+        judul: artikel.judul,
+        isi: artikel.isi,
+        createdAt: convertTimeStamp(artikel.createdAt),
+        updatedAt: convertTimeStamp(artikel.updatedAt)
+      };
     })
     .catch((err) => {
       console.log(err);

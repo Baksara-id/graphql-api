@@ -6,6 +6,7 @@ const {
   updateUser,
   createUserLencana,
   createUserLevel,
+  logoutUser,
 } = require('./UserController');
 
 const { levels, level, createLevel } = require('./LevelController');
@@ -63,6 +64,7 @@ module.exports = {
   user,
   createUser,
   loginUser,
+  logoutUser,
   updateUser,
   createUserLencana,
   createUserLevel,

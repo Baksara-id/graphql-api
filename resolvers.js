@@ -42,6 +42,7 @@ const resolvers = {
   Mutation: {
     createUser: b.createUser,
     loginUser: b.loginUser,
+    logoutUser: b.logoutUser,
     updateUser: b.updateUser,
     createLevel: b.createLevel,
     createRiwayatBelajar: b.createRiwayatBelajar,

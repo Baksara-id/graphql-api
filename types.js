@@ -84,6 +84,7 @@ const types = gql`
     judul: String!
     isi: String!
     url_gambar: String!
+    createdAt: String
   }
 
   type Kategori {
@@ -132,6 +133,8 @@ const types = gql`
     createUser(name: String!, email: String!, password: String!): User!
 
     loginUser(email: String!, password: String!): User!
+
+    logoutUser(id: Int!): Boolean!
 
     updateUser(
       id: Int!
