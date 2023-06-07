@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server');
 
+
 const types = gql`
   type User {
     id: Int!
