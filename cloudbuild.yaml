@@ -49,8 +49,6 @@ steps:
         'value(name)',
       ]
     id: 'get-connector-name'
-    env:
-      - 'CONNECTOR_NAME=$(cat $BUILD_STEP_OUTPUT_FILE)'
 
   # Update Cloud SQL instance to use Serverless VPC Access
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -59,8 +57,8 @@ steps:
         'sql',
         'instances',
         'patch',
-        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
+        'testing-baksara:asia-southeast2:baksara',
         '--vpc-connector',
-        '$CONNECTOR_NAME',
+        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
       ]
   
