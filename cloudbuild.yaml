@@ -1,0 +1,61 @@
+steps:
+  # Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api",
+        ".",
+      ]
+
+  # Push the Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api"]
+
+  # Configure Docker for Artifact Registry using gcloud
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: ["auth", "configure-docker", "asia-northeast1-docker.pkg.dev"]
+
+  # Deploy to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "graphql-api",
+        "--image",
+        "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api",
+        "--platform",
+        "managed",
+        "--region",
+        "asia-northeast1",
+      ]
+
+  # Update Cloud SQL instance to use Serverless VPC Access
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "sql",
+        "instances",
+        "patch",
+        "testing-baksara:asia-southeast2:baksara",
+        "--vpc-connector",
+        "projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2",
+      ]
+      
+  # Configure Cloud SQL for private IP
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "sql",
+        "instances",
+        "patch",
+        "testing-baksara:asia-southeast2:baksara",
+        "--network",
+        "default",
+        "--require-ssl",
+        "--private-network-ip",
+        "10.1.96.3", # Private IP address for Cloud SQL
+      ]
+  
