@@ -1,5 +1,3 @@
 node_modules/
 app.yaml
 .gcloudignore
-./models/index.js
-index.js
