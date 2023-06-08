@@ -61,6 +61,7 @@ const types = gql`
     pertanyaan: String!
     kunci_jawaban: String!
     url_gambar: String!
+    is_approved: Boolean
   }
 
   type UserTantangan {

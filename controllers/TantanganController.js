@@ -66,22 +66,55 @@ const riwayat_tantangans = async (
     where: {
       user_id: user_id,
     },
-    order: [["createdAt", "DESC"]],
+    order: [["tantangan_id", "ASC"]],
   });
 
-  const tantangans = [];
+  // const tantangans = [];
+  const returnTantangans = [];
+  const tantangan_id = [];
   user_tantangan.forEach((element) => {
-    tantangans.push(
-      Tantangan.findByPk(element.tantangan_id, {
-        include: {
-          all: true,
-          required: false,
-        },
-      })
-    );
+    tantangan_id.push(element.tantangan_id);
   });
+
+  console.log(tantangan_id);
+
+  const tantangans = await Tantangan.findAll({
+    where: {
+      id: {
+        [Op.in]: tantangan_id,
+      },
+    },
+    order: [["id", "ASC"]],
+    include: {
+      all: true,
+      required: false,
+    },
+  });
+
+  console.log(tantangans);
+
+  for (let i = 0 ; i < user_tantangan.length ; i++) {
+    returnTantangans.push({
+      id: tantangans[i].id,
+      nama: tantangans[i].nama,
+      exp: tantangans[i].exp,
+      soal: tantangans[i].soal,
+      pertanyaan: tantangans[i].pertanyaan,
+      kunci_jawaban: tantangans[i].kunci_jawaban,
+      url_gambar: tantangans[i].url_gambar,
+      is_approved: user_tantangan[i].is_approved,
+    });
+  }
+
+
+  return returnTantangans;
+
+  
   // console.log(tantangan_ids);
-  return tantangans;
+ /*  tantangans.forEach((element) => {
+    element.is_approved = bool[count];
+    count++;
+  }); */
 };
 
 const tantangan = async (_, { id }, { Tantangan }) => {

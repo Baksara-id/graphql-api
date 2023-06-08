@@ -1,6 +1,6 @@
 steps:
   # Build the Docker image
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "Build Dockerfile"
     args:
       [
         "build",
@@ -10,15 +10,15 @@ steps:
       ]
 
   # Push the Docker image to Artifact Registry
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "Push to Artifact Registry"
     args: ["push", "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api/graphql-api"]
 
   # Configure Docker for Artifact Registry using gcloud
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: "Configure Docker for Artifact Registry"
     args: ["auth", "configure-docker", "asia-northeast1-docker.pkg.dev"]
 
   # Deploy to Cloud Run
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: "Deploy to Cloud Run"
     args:
       [
         "run",
@@ -26,38 +26,40 @@ steps:
         "graphql-api",
         "--image",
         "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api/graphql-api",
+        "--set-cloudsql-instances",
+        "testing-baksara:asia-southeast2:baksara",
         "--platform",
         "managed",
         "--region",
-        "asia-northeast1",
+        "asia-southeast2",
       ]
 
   # Get the connector's fully-qualified name
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      [
-        'compute',
-        'networks',
-        'vpc-access',
-        'connectors',
-        'describe',
-        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
-        '--region',
-        'asia-southeast2',
-        '--format',
-        'value(name)',
-      ]
-    id: 'get-connector-name'
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   args:
+  #     [
+  #       'compute',
+  #       'networks',
+  #       'vpc-access',
+  #       'connectors',
+  #       'describe',
+  #       'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
+  #       '--region',
+  #       'asia-southeast2',
+  #       '--format',
+  #       'value(name)',
+  #     ]
+  #   id: 'get-connector-name'
 
-  # Update Cloud SQL instance to use Serverless VPC Access
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      [
-        'sql',
-        'instances',
-        'patch',
-        'testing-baksara:asia-southeast2:baksara',
-        '--vpc-connector',
-        'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
-      ]
+  # # Update Cloud SQL instance to use Serverless VPC Access
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   args:
+  #     [
+  #       'sql',
+  #       'instances',
+  #       'patch',
+  #       'testing-baksara:asia-southeast2:baksara',
+  #       '--vpc-connector',
+  #       'projects/testing-baksara/locations/asia-southeast2/connectors/sql-connect-2',
+  #     ]
   
