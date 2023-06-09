@@ -139,9 +139,9 @@ const types = gql`
 
     updateUser(
       id: Int!
-      name: String!
-      email: String!
-      password: String!
+      name: String
+      email: String
+      password: String
       exp: Int
       level: Int
       jumlah_scan: Int

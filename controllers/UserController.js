@@ -66,6 +66,7 @@ const createUser = async (_, { name, email, password }, { User }) => {
     token: res.token,
   };
 };
+
 const loginUser = async (_, { email, password }, { User }) => {
   const user = await User.findOne({ where: { email } });
   if (user && (await bcrypt.compare(password, user.password))) {
@@ -103,14 +104,26 @@ const logoutUser = async (_, { id }, { User }) => {
 
 const updateUser = async (
   _,
-  { id, name, email, password, exp, level, jumlah_scan },
+  args,
+  // { id, name, email, password, exp, level, jumlah_scan },
   { User }
 ) => {
-  await User.update(
-    { name, email, password, exp, level, jumlah_scan },
-    { where: { id } }
-  );
-  return await User.findByPk(id);
+  const id = args.id;
+  const user = await User.findByPk(id, {
+    include: [
+      {
+        all: true,
+        required: false,
+      },
+    ],
+  });
+  Object.keys(args).forEach(async (key) => {
+    if (args[key] !== null && key !== "id") {
+      user[key] = args[key];
+      await user.save();
+    }
+  });
+  return await user;
 };
 
 const createUserLencana = async (
