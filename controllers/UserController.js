@@ -40,7 +40,7 @@ const user = async (_, { id }, { User }) => {
     });
 };
 
-const createUser = async (_, { name, email, password }, { User }) => {
+const createUser = async (_, { name, email, password }, { User, RiwayatBelajar }) => {
   const oldUser = await User.findOne({ where: { email } });
   if (oldUser) {
     throw new ApolloError(
@@ -59,6 +59,13 @@ const createUser = async (_, { name, email, password }, { User }) => {
   });
   newUser.token = token;
   const res = await newUser.save();
+
+  await RiwayatBelajar.create({
+    user_id: res.id,
+    nomor_modul: 1,
+    nomor_pelajaran: 1,
+  });
+
   return {
     id: res.id,
     name: res.name,
