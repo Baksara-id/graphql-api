@@ -59,6 +59,7 @@ const artikel = async (_, { id }, { Artikel }) => {
         id: artikel.id,
         judul: artikel.judul,
         isi: artikel.isi,
+        url_gambar: artikel.url_gambar,
         createdAt: convertTimeStamp(artikel.createdAt),
         updatedAt: convertTimeStamp(artikel.updatedAt)
       };
