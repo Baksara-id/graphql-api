@@ -75,7 +75,6 @@ const createArtikel = async( _, { judul, kategori_id, isi, url_gambar }, { Artik
     isi,
     url_gambar,
   });
-
   const returnArtikel = await Artikel.findOne({
     where: { id: artikel.id },
     include: {
