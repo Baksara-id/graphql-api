@@ -28,6 +28,7 @@ const artikels = async (_, __, { Artikel }) => {
           id: element.id,
           judul: element.judul,
           isi: element.isi,
+          url_gambar: element.url_gambar,
           createdAt: date_string,
           updatedAt: date_string2
         })
