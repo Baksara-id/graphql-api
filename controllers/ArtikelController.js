@@ -53,8 +53,6 @@ const artikel = async (_, { id }, { Artikel }) => {
     },
   })
     .then((artikel) => {
-      // console.log(artikel);
-      
       return {
         id: artikel.id,
         judul: artikel.judul,
