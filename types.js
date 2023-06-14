@@ -145,6 +145,7 @@ const types = gql`
       exp: Int
       level: Int
       jumlah_scan: Int
+      langganan_id: Int
     ): User!
 
     createRiwayatBelajar(
