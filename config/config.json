@@ -1,10 +1,10 @@
 {
     "development": {
-        "username": "root",
-        "password": "(#!baksara_2023!#)",
-        "database": "baksara",
-        "dialect": "mysql",
-        "host": "10.1.96.3",
+        "username": "${DB_USER}",
+        "password": "${DB_PASSWORD}",
+        "database": "${DB_DATABASE}",
+        "host": "${DB_HOST}",
+        "dialect":"mysql",
         "dialectOptions": {
             "socketPath": "/cloudsql/testing-baksara:asia-southeast2:baksara"
         }
@@ -17,13 +17,13 @@
         "dialect": "mysql"
     },
     "production": {
-        "username": "root",
-        "password": "(#!baksara_2023!#)",
-        "database": "baksara_production",
-        "dialect": "mysql",
-        "host": "10.1.96.3",
+        "username": {"use_env_variable": "DB_USER"},
+        "password": {"use_env_variable": "DB_PASSWORD"},
+        "database": {"use_env_variable": "DB_DATABASE"},
+        "host": {"use_env_variable": "DB_HOST"},
+        "dialect":"mysql",
         "dialectOptions": {
-            "socketPath": "/cloudsql/testing-baksara:asia-southeast2:baksara"
+            "socketPath": {"use_env_variable": "DB_SOCKET_PATH"}
         }
     }
 }
