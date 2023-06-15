@@ -62,7 +62,7 @@
         <li><a href="#product-demo">Product Demo</a></li>
         <li><a href="#system-graph-and-flow">System Graph and Flow</a></li>
         <li><a href="#database-design">Database Design</a></li>
-        <li><a href="#ci/cd-environment">CI/CD Environment</a></li>
+        <li><a href="#cicd-environment">CI/CD Environment</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
