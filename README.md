@@ -59,6 +59,10 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#product-demo">Product Demo</a></li>
+        <li><a href="#system-graph-and-flow">System Graph and Flow</a></li>
+        <li><a href="#database-design">Database Design</a></li>
+        <li><a href="#ci/cd-environment">CI/CD Environment</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -174,7 +178,7 @@ npm install
 ```sh
    npm run dev
 ```
-*If you want to run the server in production mode :
+* If you want to run the server in production mode :
 ```sh
    npm run start
 ```
@@ -211,7 +215,7 @@ See the [open issues](https://github.com/baksara-id/graphql-api/issues) for a fu
 ## Contact
 
 - Glenn Steven Santoso - [LinkedIn][linkedin-url] - glennstevensantoso@gmail.com
-- Okyan Awang Ramdhana - [LinkedIn][linkedin-url-2] - okyanawang@gmail.com
+- Okyan Awang Ramadhana - [LinkedIn][linkedin-url-2] - okyanawang@gmail.com
 
 Project Link: [https://github.com/baksara-id/graphql-api](https://github.com/baksara-id/graphql-api)
 
