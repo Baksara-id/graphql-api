@@ -11,7 +11,8 @@ const server = new ApolloServer({
 
 // The port to listen on
 // const PORT = process.env.PORT || 8080;
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
+// const PORT = process.env.PORT || 4000;
 
 // Start the server
 server.listen({ port: PORT }).then(({ url }) => {
