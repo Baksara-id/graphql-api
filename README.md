@@ -22,7 +22,7 @@
 <div align="center" id="welcome">
 </div>
 
-# Welcome
+<!-- # Welcome -->
 [![Contributors][contributors-shield]][contributors-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 [![LinkedIn][linkedin-shield]][linkedin-url-2]
