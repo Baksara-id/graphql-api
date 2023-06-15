@@ -4,6 +4,7 @@
         "password": {"use_env_variable": "DB_PASSWORD"},
         "database": {"use_env_variable": "DB_DATABASE"},
         "host": {"use_env_variable": "DB_HOST"},
+        "port": 3306,
         "dialect":"mysql",
 
         "dialectOptions": {
