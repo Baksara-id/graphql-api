@@ -7,7 +7,36 @@ const { Sequelize } = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'test';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = {
+    development: {
+        "username": process.env.DB_USERNAME,
+        "password":  process.env.DB_PASSWORD,
+        "database": process.env.DB_DATABASE,
+        "dialect": "mysql",
+        "host": process.env.DB_HOST,
+        "dialectOptions": {
+            "socketPath": process.env.DB_SOCKET_PATH
+        }
+    },
+    test: {
+        "username": "root",
+        "password": "",
+        "database": "baksara",
+        "host": "127.0.0.1",
+        "dialect": "mysql"
+    },
+    deployment: {
+        "username": process.env.DB_USERNAME,
+        "password":  process.env.DB_PASSWORD,
+        "database": process.env.DB_DATABASE,
+        "dialect": "mysql",
+        "host": process.env.DB_HOST,
+        "dialectOptions": {
+            "socketPath": process.env.DB_SOCKET_PATH
+        }
+    }
+}
+// const config = require(__dirname + '/../config/config.json')[env];
 // const config = require(__dirname + '/../config/config.json')['development'];
 // const config = require(__dirname + '/../config/config.json')['test'];
 const db = {};
@@ -20,7 +49,8 @@ let sequelize;
 } else {
     sequelize = new Sequelize(config.database, config.username, config.password, config);
     } */
-sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, config[env]);
 
 sequelize.authenticate().then(() => console.log('Connection to database started'))
     .catch((error) => console.log(error, 'Error connecting to database server'));
