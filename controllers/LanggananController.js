@@ -4,6 +4,7 @@ const langganans = async (_, __, { Langganan }) => {
       all: true,
       required: false,
     },
+    order: [["id", "ASC"]],
   })
     .then((langganans) => {
       // console.log(langganans);
