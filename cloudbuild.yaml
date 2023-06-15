@@ -8,20 +8,10 @@ steps:
         "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api/graphql-api",
         ".",
       ]
-    env:
-      - "DB_DATABASE=${{ secrets.DB_DATABASE_DEVELOPMENT }}"
-      - "DB_HOST=${{ secrets.DB_HOST }}"
-      - "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
-      - "DB_SOCKET_PATH=${{ secrets.DB_SOCKET_PATH }}"
-      - "DB_USERNAME=${{ secrets.DB_USERNAME }}"
 
   # Push the Docker image to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "push",
-        "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api/graphql-api",
-      ]
+    args: ["push", "asia-northeast1-docker.pkg.dev/testing-baksara/graphql-api/graphql-api"]
 
   # Configure Docker for Artifact Registry using gcloud
   - name: "gcr.io/cloud-builders/gcloud"
@@ -43,3 +33,4 @@ steps:
         "--region",
         "asia-northeast1",
       ]
+  
