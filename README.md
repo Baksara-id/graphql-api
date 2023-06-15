@@ -117,8 +117,8 @@ See the [open issues](https://github.com/baksara-id/graphql-api/issues) for a fu
 <!-- CONTACT -->
 ## Contact
 
-Glenn Steven Santoso - [LinkedIn][linkedin-url] - glennstevensantoso@gmail.com
-Okyan Awang Ramdhana - [LinkedIn][linkedin-url-2] - okyanawang@gmail.com
+- Glenn Steven Santoso - [LinkedIn][linkedin-url] - glennstevensantoso@gmail.com
+- Okyan Awang Ramdhana - [LinkedIn][linkedin-url-2] - okyanawang@gmail.com
 
 Project Link: [https://github.com/baksara-id/graphql-api](https://github.com/baksara-id/graphql-api)
 
