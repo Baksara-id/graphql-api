@@ -6,7 +6,7 @@
         "host": "${DB_HOST}",
         "dialect":"mysql",
         "dialectOptions": {
-            "socketPath": "/cloudsql/testing-baksara:asia-southeast2:baksara"
+            "socketPath": "${DB_SOCKET}"
         }
     },
     "test": {
