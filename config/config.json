@@ -19,7 +19,7 @@
     "production": {
         "username": "root",
         "password": "(#!baksara_2023!#)",
-        "database": "baksara_production",
+        "database": "baksara",
         "dialect": "mysql",
         "host": "10.1.96.3",
         "dialectOptions": {
