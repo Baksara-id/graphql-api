@@ -53,6 +53,7 @@ const createUser = async (_, { name, email, password }, { User, RiwayatBelajar }
     name: name,
     email: email.toLowerCase(),
     password: encryptedPassword,
+    avatar: 'https://storage.googleapis.com/baksara-db/image/profil/profile.png'
   });
   const token = jwt.sign({ user_id: newUser.id, email }, "baksaratampan", {
     expiresIn: "2h",
