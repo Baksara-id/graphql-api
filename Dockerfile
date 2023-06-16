@@ -5,4 +5,4 @@ WORKDIR /graphql-api
 COPY package*.json /graphql-api/
 RUN npm install
 COPY . .
-CMD ["npm", "start-prod"]
+CMD ["npm", "start"]
